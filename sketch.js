@@ -30,12 +30,17 @@ const S_KEY = 83;
 const D_KEY = 68;
 const A_KEY = 65;
 
+// creates variable for direction
+var direction = 0;
+
 function preload() {
  
   // Add new avatar animations here
-  playerAvatar = new Avatar("Player", 100, 150, 'assets/walk1.png', 'assets/walk2.png');
+  playerAvatar = new Avatar("Player", 100, 150, 'assets/walk-01.png', 'assets/walk-02.png');
   playerAvatar.setMaxSpeed(5);
-  playerAvatar.addStandingAnimation('assets/stand1.png', 'assets/stand2.png')
+  playerAvatar.addStandingAnimation('assets/stand-01.png', 'assets/stand-02.png');
+  playerAvatar.addBackAnimation('assets/back-01.png', 'assets/back-02.png');
+  playerAvatar.addFrontAnimation('assets/font-01.png', 'assets/font-02.png');
 }
 
 // Setup code goes here
@@ -82,9 +87,11 @@ function checkMovement() {
   // Check y movement
   if(keyIsDown(DOWN_ARROW) || keyIsDown(S_KEY)) {
     ySpeed = speed;
+    direction = 0;
   }
   else if(keyIsDown(UP_ARROW) || keyIsDown(W_KEY)) {
     ySpeed = -speed;
+    direction = 1;
   }
 
   playerAvatar.setSpeed(xSpeed,ySpeed);
@@ -99,6 +106,8 @@ class Avatar  {
     this.sprite.addAnimation('walking', startPNGPath, endPNGPath);
     this.maxSpeed = 6;
     this.hasStandingAnimation = false;
+    this.hasFrontAnimation = false;
+    this.hasBackAnimation = false;
     this.currentAnimation = 'walking';
     
     //console.log(this);
@@ -119,6 +128,18 @@ class Avatar  {
     this.maxSpeed = num;
   }
 
+  // add a front walking animation
+  addFrontAnimation(startPNGPath, endPNGPath) {
+    this.sprite.addAnimation('front', startPNGPath, endPNGPath);
+    this.hasFrontAnimation = true;
+  }
+
+  // add a back walking animation
+  addBackAnimation(startPNGPath, endPNGPath) {
+    this.addBackAnimation('back', startPNGPath, endPNGPath);
+    this.hasBackAnimation = true;
+  }
+
   // set current speed, flip sprite, constain to max
   setSpeed(xSpeed,ySpeed) {
     // flip sprite depending on direction
@@ -134,6 +155,12 @@ class Avatar  {
     // may need to optimize this
     if( xSpeed === 0 && ySpeed === 0 && this.hasStandingAnimation === true ) {
       this.sprite.changeAnimation('standing');
+    }
+    else if(direction === 0 && this.hasFrontAnimation === true) {
+      this.sprite.changeAnimation('front');
+    }
+    else if(direction === 1 && this.hasBackAnimation === true) {
+      this.sprite.changeAnimation('back');
     }
     else {
       this.sprite.changeAnimation('walking');
