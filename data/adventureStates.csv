@@ -1,0 +1,12 @@
+ID,StateName,ClassName,PNGFilename,CollisionFilename
+0,Splash,PNGRoom,assets/Splash.png,
+1,Instructions,InstructionsScreen,assets/Instructions.png,
+2,Center,PNGRoom,assets/Center.png,
+3,Tech,PNGRoom,assets/Tech.png,
+4,Neighborhood,PNGRoom,assets/Neighborhood.png,
+5,Chinatown,PNGRoom,assets/Chinatown.png,
+6,Cinema,PNGRoom,assets/Cinema.png,
+7,Home,PNGRoom,assets/Home.png,
+8,Street1,PNGRoom,assets/Street1.png,
+9,Street2,PNGRoom,assets/Street2.png,
+10,Street3,PNGRoom,Assets/Street3.png,
