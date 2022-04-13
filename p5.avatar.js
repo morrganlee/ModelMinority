@@ -37,15 +37,15 @@ class Avatar  {
   }
 
    // adds a moving animation (optional)
-   addMovingAnimation(startPNGPath, endPNGPath) {
+   addAnimation(startPNGPath, endPNGPath) {
     this.sprite.addAnimation('walking', startPNGPath, endPNGPath);
     this.hasMovingAnimation = true;
     this.currentAnimation = 'walking';
   }
 
   // adds a standing animation (optional)
-  addStandingAnimation(startPNGPath, endPNGPath) {
-    this.sprite.addAnimation('standing', startPNGPath, endPNGPath);
+  addImage(startPNGPath) {
+    this.sprite.addAnimation('standing', startPNGPath);
     this.hasStandingAnimation = true;
   }
 
@@ -79,16 +79,16 @@ class Avatar  {
       this.sprite.mirrorX(1);
     }
 
-    if( this.hasStandingAnimation ) {
-      this.sprite.changeAnimation('standing');
-    }
+    // if( this.hasStandingAnimation ) {
+    //   this.sprite.changeAnimation('standing');
+    // }
 
     // may need to optimize this
-    if( xSpeed === 0 && ySpeed === 0 && this.hasStandingAnimation ) {
-      this.sprite.changeAnimation('standing');
+    if( xSpeed === 0 && ySpeed === 0) {
+      // this.sprite.changeAnimation('standing');
     }
     else if( this.hasMovingAnimation ) {
-      this.sprite.changeAnimation('walking');
+      // this.sprite.changeAnimation('walking');
     }
     
     // set to xSpeed and constrain to max speed

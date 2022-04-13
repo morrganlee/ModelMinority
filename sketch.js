@@ -1,8 +1,8 @@
 /***********************************************************************************
-  MoodyMaze
-  by Scott Kildall
+  Your Model Minority
+  by Morgan Lee
 
-  Uses the p5.2DAdventure.js class 
+  Uses the p5.2DAdventure.js class by Scott Kidall
   
 ------------------------------------------------------------------------------------
 	To use:
@@ -18,6 +18,20 @@ var adventureManager;
 
 // p5.play
 var playerAvatar;
+
+//tester subclass
+var auntie;
+var ceo;
+var tech1;
+var tech2;
+var tech3;
+var tech4;
+var tech5;
+var tech6;
+var mom;
+var dad;
+var protest;
+var activist;
 
 // Clickables: the manager class
 var clickablesManager;    // the manager class
@@ -35,6 +49,11 @@ const A_KEY = 65;
 var speed = 5;
 
 //--- Your globals would go here
+// 0 = down | 1 = up | 2 = left | 3 = right
+var direction = 0;
+var front;
+var back;
+var side;
 
 
 // Allocate Adventure Manager with states table and interaction tables
@@ -43,6 +62,27 @@ function preload() {
   clickablesManager = new ClickableManager('data/clickableLayout.csv');
   adventureManager = new AdventureManager('data/adventureStates.csv', 'data/interactionTable.csv', 'data/clickableLayout.csv');
   //---
+
+  // direction avatar
+  front = loadImage('assets/frontstill-01.png');
+  back = loadImage('assets/backstill-01.png');
+  side = loadImage('assets/sidestill-01.png');
+
+  // npc placeholders
+  auntie = loadImage('assets/npc-auntie.png');
+  ceo = loadImage('assets/npc-ceo.png');
+  tech1 = loadImage('assets/npc-tech1.png');
+  tech2 = loadImage('assets/npc-tech2.png');
+  tech3 = loadImage('assets/npc-tech3.png');
+  tech4 = loadImage('assets/npc-tech4.png');
+  tech5 = loadImage('assets/npc-tech5.png');
+  tech6 = loadImage('assets/npc-tech6.png');
+  mom = loadImage('assets/npc-mom.png');
+  dad = loadImage('assets/npc-dad.png');
+  activist = loadImage('assets/npc-activist.png');
+  protest = loadImage('assets/npc-protest.png');
+  
+
 }
 
 // Setup the adventure manager
@@ -61,8 +101,12 @@ function setup() {
   playerAvatar.setMaxSpeed(20);
 
   // MODIFY THIS: add your filenames here, right now our moving animation and standing animation are the same
-  playerAvatar.addMovingAnimation( 'assets/front-01.png', 'assets/front-02.png');
-  playerAvatar.addStandingAnimation('assets/stillfront-01.png', 'assets/stillfront-02.png');
+  playerAvatar.sprite.addImage('front', front);
+  playerAvatar.sprite.addAnimation('front-walking', 'assets/front-01.png', 'assets/front-03.png');
+  playerAvatar.sprite.addImage('back', back);
+  playerAvatar.sprite.addAnimation('back-walking', 'assets/back-01.png', 'assets/back-02.png');
+  playerAvatar.sprite.addImage('side', side);
+  playerAvatar.sprite.addAnimation('side-walking', 'assets/side-01.png', 'assets/side-02.png');
 
   //--- TEMPLATE STUFF: Don't change
   // use this to track movement from toom to room in adventureManager.draw()
@@ -83,6 +127,7 @@ function setup() {
 
 // Adventure manager handles it all!
 function draw() {
+
   //--- TEMPLATE STUFF: Don't change
   // draws background rooms and handles movement from one to another
   adventureManager.draw();
@@ -130,6 +175,57 @@ function checkMovement() {
   playerAvatar.setSpeed(xSpeed,ySpeed);
 }
 //--
+
+// Matt's code:
+function checkMovementAdvanced() {
+  // Check x movement
+  if(keyIsDown(RIGHT_ARROW) || keyIsDown(D_KEY)) {
+    playerAvatar.sprite.mirrorX(1);
+    playerAvatar.sprite.changeAnimation('side-walking');
+    direction = 3;
+    playerAvatar.sprite.velocity.x = speed;
+  }
+  else if(keyIsDown(LEFT_ARROW) || keyIsDown(A_KEY)) {
+    playerAvatar.sprite.mirrorX(-1);
+    playerAvatar.sprite.changeAnimation('side-walking');
+    direction = 2;
+    playerAvatar.sprite.velocity.x = -speed;
+  }
+  else {
+    checkDirection();
+    playerAvatar.sprite.velocity.x = 0;
+  }
+
+
+  if(keyIsDown(DOWN_ARROW) || keyIsDown(S_KEY)) {
+    playerAvatar.sprite.mirrorX(1);
+    playerAvatar.sprite.changeAnimation('front-walking');
+    direction = 0;
+    playerAvatar.sprite.velocity.y = speed;
+
+  }
+  else if(keyIsDown(UP_ARROW) || keyIsDown(W_KEY)) {
+    playerAvatar.sprite.mirrorX(1);
+    playerAvatar.sprite.changeAnimation('back-walking');
+    direction = 1;
+    playerAvatar.sprite.velocity.y = -speed;
+  }
+  else {
+    playerAvatar.sprite.velocity.y = 0;
+  }
+}
+
+function checkDirection() {
+  if (direction === 0 ) {
+    playerAvatar.sprite.changeImage(front);
+  } else if (direction === 1 ) {
+    playerAvatar.sprite.changeImage(back);
+  } else {
+    playerAvatar.sprite.changeImage(side);
+  } 
+}
+
+// end of matt's code
 
 //-- MODIFY THIS: this is an example of how I structured my code. You may
 // want to do it differently
@@ -215,6 +311,113 @@ class InstructionsScreen extends PNGRoom {
 
     // Draw text in a box
     // text(this.instructionsText, width/6, height/6, this.textBoxWidth, this.textBoxHeight );
+  }
+}
+
+class ChinaRoom extends PNGRoom {
+  preload() {
+    // load sprites from advanced avatar class
+    // this.door = new StaticSprite("Door", 900, 700, 'assets/door.png');
+    //MAKE SURE TO PUT CODE IN CHECK OVERLAPS
+    
+  }
+
+  // call the PNGRoom superclass's draw function to draw the background image
+  // and draw our code adter this
+  draw() {
+    // this calls PNGRoom.draw()
+    
+    super.draw();
+
+    // Add your code here
+    image(auntie, width/2, height/3, 100, 324);
+  }
+}
+
+class Tech1Room extends PNGRoom {
+  preload() {
+    // define class varibles here, load images or anything else
+  }
+
+  // call the PNGRoom superclass's draw function to draw the background image
+  // and draw our code adter this
+  draw() {
+    // this calls PNGRoom.draw()
+    super.draw();
+
+    // Add your code here
+    image(ceo, width/3, height/2);
+    image(tech1, width - 500, height/2);
+  }
+}
+
+class Tech2Room extends PNGRoom {
+  preload() {
+    // define class varibles here, load images or anything else
+  }
+
+  // call the PNGRoom superclass's draw function to draw the background image
+  // and draw our code adter this
+  draw() {
+    // this calls PNGRoom.draw()
+    super.draw();
+
+    // Add your code here
+    image(tech2, width/3, height/2);
+    image(tech3, width - 500, height/2);
+    image(tech4, width/2, height/2);
+  }
+}
+
+class Tech3Room extends PNGRoom {
+  preload() {
+    // define class varibles here, load images or anything else
+  }
+
+  // call the PNGRoom superclass's draw function to draw the background image
+  // and draw our code adter this
+  draw() {
+    // this calls PNGRoom.draw()
+    super.draw();
+
+    // Add your code here
+    image(tech5, width/3, height/2);
+    image(tech6, width - 500, height/2);
+  }
+}
+
+class InHomeRoom extends PNGRoom {
+  preload() {
+    // define class varibles here, load images or anything else
+  }
+
+  // call the PNGRoom superclass's draw function to draw the background image
+  // and draw our code adter this
+  draw() {
+    // this calls PNGRoom.draw()
+    super.draw();
+
+    // Add your code here
+    image(mom, width/3, height/3);
+    image(dad, width/2, height/3);
+  }
+}
+
+class ProtestRoom extends PNGRoom {
+  preload() {
+    // define class varibles here, load images or anything else
+  }
+
+  // call the PNGRoom superclass's draw function to draw the background image
+  // and draw our code adter this
+  draw() {
+    // this calls PNGRoom.draw()
+    super.draw();
+
+    // Add your code here
+    imageMode(CENTER);
+    image(protest, width/2, height - 330);
+    image(activist, width - 200, height/3);
   }
 }
 

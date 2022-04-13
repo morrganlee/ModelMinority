@@ -1,2 +1,8 @@
 ID,Name,State,PNGFilename,Text,x,y,visible
+1,CinemaEnter,Cinema,,Enter,622,455,yes
+2,Cinema1,CinemaLobby,,1,231,620,yes
+3,Cinema2,CinemaLobby,,2,644,620,yes
+4,Cinema3,CinemaLobby,,3,1062,620,yes
+5,TechEnter,Tech,,Enter,825,450,yes
+6,HomeEnter,Home,,Enter,645,545,yes
 
