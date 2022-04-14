@@ -148,6 +148,8 @@ function draw() {
     drawSprite(playerAvatar.sprite);
     //--
   } 
+
+  avatarReset()
 }
 
 //--- TEMPLATE STUFF: Don't change 
@@ -271,6 +273,10 @@ clickableButtonPressed = function() {
   adventureManager.clickablePressed(this.name); 
 }
 //
+
+function avatarReset(){
+  
+}
 
 
 
