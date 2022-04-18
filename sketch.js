@@ -95,7 +95,7 @@ function setup() {
   //---
 
   // MODIFY THIS: change to initial position
-  playerAvatar = new Avatar("Player", 355, 416);
+  playerAvatar = new Avatar("Player", 355, 516);
    
   // MODIFY THIS: to make your avatar go faster or slower
   playerAvatar.setMaxSpeed(20);
@@ -275,7 +275,7 @@ clickableButtonPressed = function() {
 //
 
 function avatarReset(){
-  
+
 }
 
 

@@ -94,7 +94,8 @@ class AdventureManager {
         }
         else {
             this.checkPlayerSprite();
-
+            
+            
             // this will reset the player position, if we go outside of a collision rect
             if( this.states[this.currentState].checkForCollision(this.playerSprite) === true ) {
                 // set to last good position
@@ -418,7 +419,7 @@ function PNGCollisionTableLoaded() {
     else {
         print("pThis.stateName = " + pThis.stateName );
     }
-
+    
      if( pThis.collisionTable !== null) { 
         print("Collision table row count = " + pThis.collisionTable.getRowCount());
         for( let i = 0; i < pThis.collisionTable.getRowCount(); i++ ) {
@@ -513,6 +514,8 @@ class PNGRoom {
             return;
         }
 
+        this.checkLoadedTable();
+
         push();
         imageMode(CENTER);
         image(this.image,width/2,height/2);
@@ -523,10 +526,13 @@ class PNGRoom {
 
         pop(); 
     }
-
+ 
     // Go through our array and ook to see if we are in bounds anywhere
     checkForCollision(ps) {
+    
         if( ps !== null ) {  
+            //console.log(this.collisionSX);
+            //console.log(this.collisionSX.length);
             for(let i = 0; i < this.collisionSX.length; i++ ) {
                 if( ps.position.x >= this.collisionSX[i] &&  ps.position.x <= this.collisionEX[i] ) {
                     if( ps.position.y >= this.collisionSY[i] &&  ps.position.y <= this.collisionEY[i] ) {
@@ -540,6 +546,19 @@ class PNGRoom {
         return false; 
     }
 
+    checkLoadedTable() {
+        if( this.collisionTable !== null && this.collisionSX.length === 0 ) { 
+            print("Collision table row count = " + this.collisionTable.getRowCount());
+            for( let i = 0; i < this.collisionTable.getRowCount(); i++ ) {
+                this.collisionSX[i] = this.collisionTable.getString(i, 'sx');
+                this.collisionSY[i] = this.collisionTable.getString(i, 'sy');
+                this.collisionEX[i] = this.collisionTable.getString(i, 'ex');
+                this.collisionEY[i] = this.collisionTable.getString(i, 'ey');
+            }
+    
+            this.collisionTableLoaded = true;
+        }
+    }
     
     // output to DebugScreen or console window, if we have no debug object
     output(s) {
