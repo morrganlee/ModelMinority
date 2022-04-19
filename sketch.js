@@ -21,8 +21,6 @@ var playerAvatar;
 
 //tester subclass
 var auntie;
-var ceo;
-var tech1;
 var tech2;
 var tech3;
 var tech4;
@@ -70,8 +68,6 @@ function preload() {
 
   // npc placeholders
   auntie = loadImage('assets/npc-auntie.png');
-  ceo = loadImage('assets/npc-ceo.png');
-  tech1 = loadImage('assets/npc-tech1.png');
   tech2 = loadImage('assets/npc-tech2.png');
   tech3 = loadImage('assets/npc-tech3.png');
   tech4 = loadImage('assets/npc-tech4.png');
@@ -81,7 +77,6 @@ function preload() {
   dad = loadImage('assets/npc-dad.png');
   activist = loadImage('assets/npc-activist.png');
   protest = loadImage('assets/npc-protest.png');
-  
 
 }
 
@@ -95,7 +90,7 @@ function setup() {
   //---
 
   // MODIFY THIS: change to initial position
-  playerAvatar = new Avatar("Player", 355, 516);
+  playerAvatar = new Avatar("Player", 200, 450);
    
   // MODIFY THIS: to make your avatar go faster or slower
   playerAvatar.setMaxSpeed(20);
@@ -123,6 +118,12 @@ function setup() {
   // that are not in the array 
   setupClickables(); 
   //--
+
+  // load adobe font
+  textFont('roc-grotesk');
+
+  // NEW: line for debugging
+  adventureManager.changeState("Tech1");
 }
 
 // Adventure manager handles it all!
@@ -247,6 +248,10 @@ function setupClickables() {
     clickables[i].onHover = clickableButtonHover;
     clickables[i].onOutside = clickableButtonOnOutside;
     clickables[i].onPress = clickableButtonPressed;
+    clickables[i].textFont = "roc-grotesk";
+    clickables[i].textColor = "#CA2B30";
+    clickables[i].textSize = 30;
+    clickables[i].width = 100;
   }
 }
 //--
@@ -254,16 +259,16 @@ function setupClickables() {
 //-- MODIFY THIS:
 // tint when mouse is over
 clickableButtonHover = function () {
-  this.color = "#AA33AA";
+  this.textcolor = "#7FB069";
   this.noTint = false;
-  this.tint = "#FF0000";
+  this.tint = "#F8F5F2";
 }
 
 //-- MODIFY THIS:
 // color a light gray if off
 clickableButtonOnOutside = function () {
   // backto our gray color
-  this.color = "#AAAAAA";
+  this.textcolor = "#7FB069";
 }
 
 //--- TEMPLATE STUFF: Don't change 
@@ -289,35 +294,55 @@ function avatarReset(){
 // It is sublcassed from PNGRoom, which means all the loading, unloading and drawing of that
 // class can be used. We call super() to call the super class's function as needed
 class InstructionsScreen extends PNGRoom {
-  // preload is where we define OUR variables
-  // Best not to use constructor() functions for sublcasses of PNGRoom
-  // AdventureManager calls preload() one time, during startup
   preload() {
-    // These are out variables in the InstructionsScreen class
-    // this.textBoxWidth = (width/6)*4;
-    // this.textBoxHeight = (height/6)*4; 
+    // define class varibles here, load images or anything else
+    this.npc1 = new NPC("MomInstruction", width/3, 450, 'assets/npc-mom.png');
+    this.npc1.addSingleInteraction("Why don\'t you visit home?");
+    this.npc1.addSingleInteraction("Do you not love us?");
+    this.npc1.addSingleInteraction("Keep moving. Why are you just standing here.");
 
-    // hard-coded, but this could be loaded from a file if we wanted to be more elegant
-    // this.instructionsText = "You are navigating through the interior space of your moods. There is no goal to this game, but just a chance to explore various things that might be going on in your head. Use the ARROW keys to navigate your avatar around.";
+    // setup flag, seto false
+    this.hasSetup = false;
   }
 
-  // call the PNGRoom superclass's draw function to draw the background image
-  // and draw our instructions on top of this
   draw() {
-    // tint down background image so text is more readable
-    // tint(128);
-      
+    // Idea is to call the npc1.setup() function ONE time, so we use this kind of flag
+    if( this.hasSetup === false ) {
+      // setup NPC 1
+      this.npc1.setup();
+      this.npc1.setPromptLocation(0,-170);
+
+      this.hasSetup = true; 
+    }
+
     // this calls PNGRoom.draw()
     super.draw();
-      
-    // text draw settings
-    // fill(255);
-    // textAlign(CENTER);
-    // textSize(30);
 
-    // Draw text in a box
-    // text(this.instructionsText, width/6, height/6, this.textBoxWidth, this.textBoxHeight );
-  }
+    // draw our NPCs
+    drawSprite(this.npc1.sprite);
+
+    // When you have multiple NPCs, you can add them to an array and have a function 
+    // iterate through it to call this function for each more concisely.
+    this.npc1.displayInteractPrompt(playerAvatar);
+    }
+
+    // custom code here to do stuff upon exiting room
+    unload() {
+    }
+
+    // custom code here to do stuff upon entering room
+    load() {
+    // pass to PNGRoom to load image
+    super.load();
+    }
+
+    keyPressed() {
+    if(key === ' ') {
+      if(this.npc1.isInteracting(playerAvatar)) {
+        this.npc1.continueInteraction();
+      }
+    }
+    }
 }
 
 class ChinaRoom extends PNGRoom {
@@ -343,17 +368,78 @@ class ChinaRoom extends PNGRoom {
 class Tech1Room extends PNGRoom {
   preload() {
     // define class varibles here, load images or anything else
+    this.npc1 = new NPC("Ceo", width/3, height/2, 'assets/npc-ceo.png');
+    this.npc1.addSingleInteraction("Hello, I\'m Richard!");
+    this.npc1.addSingleInteraction("I\'m the manager of this divison.");
+    this.npc1.addSingleInteraction("At WIREnet, we value diversity.");
+    this.npc1.addSingleInteraction("Feel free to walk around and talk to everyone!");
+
+    this.npc2 = new NPC("Tech1", width - 400, height/2, 'assets/npc-tech1.png');
+    // this.npc2.addStandingAnimation('assets/sun1.png', 'assets/sun3.png');
+    this.npc2.addSingleInteraction("Hello! I\'m Alan, I just started working here.");
+    this.npc2.addSingleInteraction("I graduated suma cum laude last year.");
+    this.npc2.addSingleInteraction("I was also president of my campus' Asian Scholar Association.");
+    this.npc2.addSingleInteraction("I\'m excited to see how I progress in a few years!");
+    
+    //this.npc2.setupQuest("Star", "Thanks! This is just what I needed", "I didn't ask for that!");
+
+    
+    // setup flag, seto false
+    this.hasSetup = false;
   }
 
   // call the PNGRoom superclass's draw function to draw the background image
   // and draw our code adter this
   draw() {
+    // Idea is to call the npc1.setup() function ONE time, so we use this kind of flag
+    if( this.hasSetup === false ) {
+      // setup NPC 1
+      this.npc1.setup();
+      this.npc1.setPromptLocation(0,-100);
+      
+      // setup NPC 2
+      this.npc2.setup();
+      this.npc2.setPromptLocation(0,-100);
+
+      this.hasSetup = true; 
+    }
+
     // this calls PNGRoom.draw()
     super.draw();
 
-    // Add your code here
-    image(ceo, width/3, height/2);
-    image(tech1, width - 500, height/2);
+    // draw our NPCs
+    drawSprite(this.npc1.sprite);
+    drawSprite(this.npc2.sprite);
+
+    // When you have multiple NPCs, you can add them to an array and have a function 
+    // iterate through it to call this function for each more concisely.
+    this.npc1.displayInteractPrompt(playerAvatar);
+    this.npc2.displayInteractPrompt(playerAvatar);
+  }
+
+  // custom code here to do stuff upon exiting room
+  unload() {
+    // reset NPC interaction to beginning when entering room
+    this.npc2.resetInteraction();
+  }
+
+  // custom code here to do stuff upon entering room
+  load() {
+    // pass to PNGRoom to load image
+    super.load();
+    
+    // Add custom code here for unloading
+  }
+
+  keyPressed() {
+    if(key === ' ') {
+      if(this.npc1.isInteracting(playerAvatar)) {
+        this.npc1.continueInteraction();
+      }
+      if(this.npc2.isInteracting(playerAvatar)) {
+        this.npc2.continueInteraction();
+      }
+    }
   }
 }
 

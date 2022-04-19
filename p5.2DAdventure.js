@@ -94,8 +94,7 @@ class AdventureManager {
         }
         else {
             this.checkPlayerSprite();
-            
-            
+
             // this will reset the player position, if we go outside of a collision rect
             if( this.states[this.currentState].checkForCollision(this.playerSprite) === true ) {
                 // set to last good position
@@ -119,20 +118,7 @@ class AdventureManager {
 
     // move to interation table!
     keyPressed(keyChar) {
-       // go through each row, look for a match to the current state
-      for (let i = 0; i < this.interactionTable.getRowCount(); i++) {
-
-        // the .name property of a function will convert function to string for comparison
-        if(this.currentStateName === this.interactionTable.getString(i, 'CurrentState') ) {
-            // now, look for a match with the key typed, converting it to a string
-            if( this.interactionTable.getString(i, 'KeyTyped') === String(keyChar) ) {
-                // if a match, set the drawFunction to the next state, eval() converts
-                // string to function
-                this.changeState(this.interactionTable.getString(i, 'NextState') );
-                break;
-            }
-        }
-      }
+        this.states[this.currentState].keyPressed();
     }
 
     // Right now, just support for mouse released, but in future will have
@@ -419,7 +405,7 @@ function PNGCollisionTableLoaded() {
     else {
         print("pThis.stateName = " + pThis.stateName );
     }
-    
+
      if( pThis.collisionTable !== null) { 
         print("Collision table row count = " + pThis.collisionTable.getRowCount());
         for( let i = 0; i < pThis.collisionTable.getRowCount(); i++ ) {
@@ -484,9 +470,6 @@ class PNGRoom {
        
     }
 
-
-
-
     load() {
         this.image = loadImage(this.imagePath);
         // this loads the collision table, we use the flag b/c loadTable needs
@@ -501,7 +484,6 @@ class PNGRoom {
             print( "load() for: " + this.stateName );
             print("Collision table row count = " + this.collisionTable.getRowCount());
         }
-
     }
 
     unload() {
@@ -526,13 +508,15 @@ class PNGRoom {
 
         pop(); 
     }
- 
+
+    // do nothing subclasses can override (or not)
+    keyPressed() {
+
+    }
+
     // Go through our array and ook to see if we are in bounds anywhere
     checkForCollision(ps) {
-    
         if( ps !== null ) {  
-            //console.log(this.collisionSX);
-            //console.log(this.collisionSX.length);
             for(let i = 0; i < this.collisionSX.length; i++ ) {
                 if( ps.position.x >= this.collisionSX[i] &&  ps.position.x <= this.collisionEX[i] ) {
                     if( ps.position.y >= this.collisionSY[i] &&  ps.position.y <= this.collisionEY[i] ) {
@@ -547,7 +531,7 @@ class PNGRoom {
     }
 
     checkLoadedTable() {
-        if( this.collisionTable !== null && this.collisionSX.length === 0 ) { 
+        if( this.collisionTable !== null && this.collisionSX.length === 0 ) {
             print("Collision table row count = " + this.collisionTable.getRowCount());
             for( let i = 0; i < this.collisionTable.getRowCount(); i++ ) {
                 this.collisionSX[i] = this.collisionTable.getString(i, 'sx');
