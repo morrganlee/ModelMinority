@@ -235,11 +235,17 @@ class NPC extends Avatar {
 
   // MODIFY THIS - drawing of the prompt
   drawPrompt() {
+    push();
       fill('black');
+      noStroke();
+      rectMode(CENTER);
+      rect(this.sprite.position.x + this.promptX, this.sprite.position.y + this.promptY, 300, 30, 20);
+
+      fill('white');
       textSize(14);
       textAlign(CENTER);
-      
-      text(this.displayMessage, this.sprite.position.x + this.promptX, this.sprite.position.y + this.promptY);
+      text(this.displayMessage, this.sprite.position.x + this.promptX, this.sprite.position.y + this.promptY + 5);
+    pop();
   }
 
   // Continues the conversation with an NPC through the interaction array.

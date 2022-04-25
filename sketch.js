@@ -123,7 +123,7 @@ function setup() {
   textFont('roc-grotesk');
 
   // NEW: line for debugging
-  // adventureManager.changeState("Street3");
+  adventureManager.changeState("Street1");
 }
 
 // Adventure manager handles it all!
@@ -303,7 +303,7 @@ class InstructionsScreen extends PNGRoom {
     this.npc1 = new NPC("MomInstruction", width/3, 450, 'assets/npc-mom.png');
     this.npc1.addSingleInteraction("Why don\'t you visit home?");
     this.npc1.addSingleInteraction("Do you not love us?");
-    this.npc1.addSingleInteraction("Keep moving. Why are you just standing here.");
+    this.npc1.addSingleInteraction("Keep moving. Why are you just standing.");
 
     // setup flag, seto false
     this.hasSetup = false;
@@ -314,7 +314,7 @@ class InstructionsScreen extends PNGRoom {
     if( this.hasSetup === false ) {
       // setup NPC 1
       this.npc1.setup();
-      this.npc1.setPromptLocation(0,-170);
+      this.npc1.setPromptLocation(0,-175);
 
       this.hasSetup = true; 
     }
@@ -719,7 +719,7 @@ class InHomeRoom extends PNGRoom {
     this.npc2.displayInteractPrompt(playerAvatar);
 
     // start game
-    if(this.npc2.interactionIndex === 3){
+    if(this.npc2.interactionIndex === 4){
         drawHomeGrabbables();
     }
   }
@@ -840,6 +840,71 @@ class ProtestRoom extends PNGRoom {
   //   image(protest, width/2, height - 330);
   //   image(activist, width - 200, height/3);
   // }
+}
+
+var sign1;
+var sign2;
+var sign3;
+var sign4;
+var sign5;
+var sign6;
+var sign7;
+
+class Street1Room extends PNGRoom {
+  preload() {
+    this.sign = new StaticSprite("Sign1", 500, 500, 'assets/streetgrab1.png');
+    this.sign = new StaticSprite("Sign2", 600, 300, 'assets/streetgrab2.png');
+    this.sign = new StaticSprite("Sign3", 550, 600, 'assets/streetgrab3.png');
+    // this.signLoaded = false;
+
+    // signUsed = false;
+  }
+
+  // call the PNGRoom superclass's draw function to draw the background image
+  // and draw our code adter this
+  draw() {
+    // this calls PNGRoom.draw()
+    super.draw();
+
+    // Add your code here
+    if(this.signLoaded === false) {
+      this.sign.setup();
+      // this.signLoaded = true;
+    }
+
+    drawSprites();
+
+    // playerAvatar.sprite.overlap(this.sign.sprite, this.)
+  }
+}
+
+class Street2Room extends PNGRoom {
+  preload() {
+    this.sign = new StaticSprite("Sign4", 500, 500, 'assets/streetgrab4.png');
+    this.sign = new StaticSprite("Sign5", 600, 300, 'assets/streetgrab5.png');
+    this.sign = new StaticSprite("Sign6", 300, 600, 'assets/streetgrab6.png');
+    this.sign = new StaticSprite("Sign7", 400, 100, 'assets/streetgrab7.png');
+    // this.signLoaded = false;
+
+    // signUsed = false;
+  }
+
+  // call the PNGRoom superclass's draw function to draw the background image
+  // and draw our code adter this
+  draw() {
+    // this calls PNGRoom.draw()
+    super.draw();
+
+    // Add your code here
+    if(this.signLoaded === false) {
+      this.sign.setup();
+      // this.signLoaded = true;
+    }
+
+    drawSprites();
+
+    // playerAvatar.sprite.overlap(this.sign.sprite, this.)
+  }
 }
 
 //-- MODIFY THIS: for your own classes
