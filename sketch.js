@@ -44,7 +44,7 @@ const A_KEY = 65;
 //---
 
 //-- MODIFY THIS for different speeds
-var speed = 5;
+var speed = 7;
 
 //--- Your globals would go here
 // 0 = down | 1 = up | 2 = left | 3 = right
@@ -62,8 +62,8 @@ function preload() {
   //---
 
   // direction avatar
-  front = loadImage('assets/frontstill-01.png');
-  back = loadImage('assets/backstill-01.png');
+  // front = loadImage('assets/frontstill-01.png');
+  // back = loadImage('assets/backstill-01.png');
   side = loadImage('assets/sidestill-01.png');
 
   // npc placeholders
@@ -90,15 +90,15 @@ function setup() {
   //---
 
   // MODIFY THIS: change to initial position
-  playerAvatar = new Avatar("Player", 200, 450);
+  playerAvatar = new Avatar("Player", 500, 450);
    
   // MODIFY THIS: to make your avatar go faster or slower
   playerAvatar.setMaxSpeed(20);
 
   // MODIFY THIS: add your filenames here, right now our moving animation and standing animation are the same
-  playerAvatar.sprite.addImage('front', front);
+  playerAvatar.sprite.addAnimation('front', 'assets/frontstill-01.png', 'assets/frontstill-02.png');
   playerAvatar.sprite.addAnimation('front-walking', 'assets/front-01.png', 'assets/front-03.png');
-  playerAvatar.sprite.addImage('back', back);
+  playerAvatar.sprite.addAnimation('back', 'assets/backstill-01.png', 'assets/backstill-02.png');
   playerAvatar.sprite.addAnimation('back-walking', 'assets/back-01.png', 'assets/back-02.png');
   playerAvatar.sprite.addImage('side', side);
   playerAvatar.sprite.addAnimation('side-walking', 'assets/side-01.png', 'assets/side-02.png');
@@ -122,7 +122,9 @@ function setup() {
   // load adobe font
   textFont('roc-grotesk');
 
-  // NEW: line for debugging
+  // frameRate(20);
+
+  // NEW: LINE FOR DEBUGGING
   adventureManager.changeState("Street1");
 }
 
@@ -144,6 +146,8 @@ function draw() {
     //--- TEMPLATE STUFF: Don't change    
     // responds to keydowns
     checkMovement();
+    checkMovementAdvanced();
+    checkDirection();
 
     // this is a function of p5.play, not of this sketch
     drawSprite(playerAvatar.sprite);
@@ -190,12 +194,14 @@ function checkMovementAdvanced() {
     playerAvatar.sprite.mirrorX(1);
     playerAvatar.sprite.changeAnimation('side-walking');
     direction = 3;
+    // print(direction);
     playerAvatar.sprite.velocity.x = speed;
   }
   else if(keyIsDown(LEFT_ARROW) || keyIsDown(A_KEY)) {
     playerAvatar.sprite.mirrorX(-1);
     playerAvatar.sprite.changeAnimation('side-walking');
     direction = 2;
+    // print(direction);
     playerAvatar.sprite.velocity.x = -speed;
   }
   else {
@@ -205,16 +211,16 @@ function checkMovementAdvanced() {
 
 
   if(keyIsDown(DOWN_ARROW) || keyIsDown(S_KEY)) {
-    playerAvatar.sprite.mirrorX(1);
     playerAvatar.sprite.changeAnimation('front-walking');
     direction = 0;
+    // print(direction);
     playerAvatar.sprite.velocity.y = speed;
 
   }
   else if(keyIsDown(UP_ARROW) || keyIsDown(W_KEY)) {
-    playerAvatar.sprite.mirrorX(1);
     playerAvatar.sprite.changeAnimation('back-walking');
     direction = 1;
+    // print(direction);
     playerAvatar.sprite.velocity.y = -speed;
   }
   else {
@@ -223,12 +229,17 @@ function checkMovementAdvanced() {
 }
 
 function checkDirection() {
-  if (direction === 0 ) {
-    playerAvatar.sprite.changeImage(front);
-  } else if (direction === 1 ) {
-    playerAvatar.sprite.changeImage(back);
-  } else {
-    playerAvatar.sprite.changeImage(side);
+  if (direction === 0 && playerAvatar.sprite.velocity.y === 0) {
+    playerAvatar.sprite.changeAnimation('front');
+  } 
+  else if (direction === 1 && playerAvatar.sprite.velocity.y === 0) {
+    playerAvatar.sprite.changeAnimation('back');
+  } 
+  else if(direction === 2 && playerAvatar.sprite.velocity.x === 0){
+    playerAvatar.sprite.changeImage('side');
+  } 
+  else if(direction === 3 && playerAvatar.sprite.velocity.x === 0){
+    playerAvatar.sprite.changeImage('side');
   } 
 }
 
@@ -297,6 +308,21 @@ function avatarReset(){
 // Instructions screen has a backgrounnd image, loaded from the adventureStates table
 // It is sublcassed from PNGRoom, which means all the loading, unloading and drawing of that
 // class can be used. We call super() to call the super class's function as needed
+
+// var fan;
+class SplashScreen extends PNGRoom {
+  preload() {
+    // fan = createImg("assets/fan.gif");
+  }
+
+  draw() {
+    super.draw();
+
+    // fan.position(104, 254);
+    // DRAW ANIMATION THROUGH P5!!!
+  }
+}
+
 class InstructionsScreen extends PNGRoom {
   preload() {
     // define class varibles here, load images or anything else
@@ -901,7 +927,7 @@ class Street2Room extends PNGRoom {
       // this.signLoaded = true;
     }
 
-    drawSprites();
+    // drawSprites();
 
     // playerAvatar.sprite.overlap(this.sign.sprite, this.)
   }
