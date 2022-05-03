@@ -19,18 +19,6 @@ var adventureManager;
 // p5.play
 var playerAvatar;
 
-//tester subclass
-var auntie;
-var tech2;
-var tech3;
-var tech4;
-var tech5;
-var tech6;
-var mom;
-var dad;
-var protest;
-var activist;
-
 // Clickables: the manager class
 var clickablesManager;    // the manager class
 var clickables;           // an array of clickable objects
@@ -40,8 +28,6 @@ const W_KEY = 87;
 const S_KEY = 83;
 const D_KEY = 68;
 const A_KEY = 65;
-
-//---
 
 //-- MODIFY THIS for different speeds
 var speed = 7;
@@ -53,6 +39,11 @@ var front;
 var back;
 var side;
 
+var screeni;
+
+var fan = [];
+var fani = 0;
+var fanbounce = 1;
 
 // Allocate Adventure Manager with states table and interaction tables
 function preload() {
@@ -60,23 +51,6 @@ function preload() {
   clickablesManager = new ClickableManager('data/clickableLayout.csv');
   adventureManager = new AdventureManager('data/adventureStates.csv', 'data/interactionTable.csv', 'data/clickableLayout.csv');
   //---
-
-  // direction avatar
-  // front = loadImage('assets/frontstill-01.png');
-  // back = loadImage('assets/backstill-01.png');
-  side = loadImage('assets/sidestill-01.png');
-
-  // npc placeholders
-  auntie = loadImage('assets/npc-auntie.png');
-  tech2 = loadImage('assets/npc-tech2.png');
-  tech3 = loadImage('assets/npc-tech3.png');
-  tech4 = loadImage('assets/npc-tech4.png');
-  tech5 = loadImage('assets/npc-tech5.png');
-  tech6 = loadImage('assets/npc-tech6.png');
-  mom = loadImage('assets/npc-mom.png');
-  dad = loadImage('assets/npc-dad.png');
-  activist = loadImage('assets/npc-activist.png');
-  protest = loadImage('assets/npc-protest.png');
 
 }
 
@@ -90,7 +64,7 @@ function setup() {
   //---
 
   // MODIFY THIS: change to initial position
-  playerAvatar = new Avatar("Player", 500, 450);
+  playerAvatar = new Avatar("Player", 200, 500);
    
   // MODIFY THIS: to make your avatar go faster or slower
   playerAvatar.setMaxSpeed(20);
@@ -99,8 +73,9 @@ function setup() {
   playerAvatar.sprite.addAnimation('front', 'assets/frontstill-01.png', 'assets/frontstill-02.png');
   playerAvatar.sprite.addAnimation('front-walking', 'assets/front-01.png', 'assets/front-03.png');
   playerAvatar.sprite.addAnimation('back', 'assets/backstill-01.png', 'assets/backstill-02.png');
-  playerAvatar.sprite.addAnimation('back-walking', 'assets/back-01.png', 'assets/back-02.png');
-  playerAvatar.sprite.addImage('side', side);
+  playerAvatar.sprite.addAnimation('back-walking', 'assets/back-01.png', 'assets/back-03.png');
+  playerAvatar.sprite.addAnimation('side', 'assets/sidestill-01.png', 'assets/sidestill-02.png');
+  playerAvatar.sprite.addAnimation('sideL', 'assets/sidestillL-01.png', 'assets/sidestillL-02.png');
   playerAvatar.sprite.addAnimation('side-walking', 'assets/side-01.png', 'assets/side-02.png');
 
   //--- TEMPLATE STUFF: Don't change
@@ -125,7 +100,7 @@ function setup() {
   // frameRate(20);
 
   // NEW: LINE FOR DEBUGGING
-  adventureManager.changeState("Street1");
+  // adventureManager.changeState("Street3");
 }
 
 // Adventure manager handles it all!
@@ -146,7 +121,7 @@ function draw() {
     //--- TEMPLATE STUFF: Don't change    
     // responds to keydowns
     checkMovement();
-    checkMovementAdvanced();
+    // checkMovementAdvanced();
     checkDirection();
 
     // this is a function of p5.play, not of this sketch
@@ -187,14 +162,12 @@ function checkMovement() {
 }
 //--
 
-// Matt's code:
 function checkMovementAdvanced() {
   // Check x movement
   if(keyIsDown(RIGHT_ARROW) || keyIsDown(D_KEY)) {
     playerAvatar.sprite.mirrorX(1);
     playerAvatar.sprite.changeAnimation('side-walking');
     direction = 3;
-    // print(direction);
     playerAvatar.sprite.velocity.x = speed;
   }
   else if(keyIsDown(LEFT_ARROW) || keyIsDown(A_KEY)) {
@@ -236,14 +209,12 @@ function checkDirection() {
     playerAvatar.sprite.changeAnimation('back');
   } 
   else if(direction === 2 && playerAvatar.sprite.velocity.x === 0){
-    playerAvatar.sprite.changeImage('side');
+    playerAvatar.sprite.changeAnimation('sideL');
   } 
   else if(direction === 3 && playerAvatar.sprite.velocity.x === 0){
-    playerAvatar.sprite.changeImage('side');
+    playerAvatar.sprite.changeAnimation('side');
   } 
 }
-
-// end of matt's code
 
 //-- MODIFY THIS: this is an example of how I structured my code. You may
 // want to do it differently
@@ -251,8 +222,18 @@ function mouseReleased() {
   if( adventureManager.getStateName() === "Splash") {
     adventureManager.changeState("Instructions");
   }
+  // IN HOME ROOM tv interaction
+  if( adventureManager.getStateName() === "InHome") {
+    if(mouseX > 736 && mouseX < 995 && mouseY > 45 && mouseY < 216){
+      if(screeni < 4){
+        screeni ++;
+      }
+     else{
+       screeni = 0;
+      }
+    }
+  }
 }
-
 
 //-------------- CLICKABLE CODE  ---------------//
 
@@ -264,7 +245,7 @@ function setupClickables() {
     clickables[i].onOutside = clickableButtonOnOutside;
     clickables[i].onPress = clickableButtonPressed;
     clickables[i].textFont = "roc-grotesk";
-    clickables[i].textColor = "#CA2B30";
+    clickables[i].textColor = "#CA2B30"; // red
     clickables[i].textSize = 30;
     clickables[i].width = 100;
   }
@@ -309,17 +290,35 @@ function avatarReset(){
 // It is sublcassed from PNGRoom, which means all the loading, unloading and drawing of that
 // class can be used. We call super() to call the super class's function as needed
 
-// var fan;
 class SplashScreen extends PNGRoom {
   preload() {
-    // fan = createImg("assets/fan.gif");
+    fan[0] = loadImage('assets/fan/fan-01.png');
+    fan[1] = loadImage('assets/fan/fan-02.png');
+    fan[2] = loadImage('assets/fan/fan-03.png');
+    fan[3] = loadImage('assets/fan/fan-04.png');
+    fan[4] = loadImage('assets/fan/fan-05.png');
+    fan[5] = loadImage('assets/fan/fan-06.png');
+    fan[6] = loadImage('assets/fan/fan-07.png');
+    fan[7] = loadImage('assets/fan/fan-08.png');
+    fan[8] = loadImage('assets/fan/fan-09.png');
+    fan[9] = loadImage('assets/fan/fan-10.png');
+    fan[10] = loadImage('assets/fan/fan-11.png');
+    fan[11] = loadImage('assets/fan/fan-12.png');
   }
 
   draw() {
     super.draw();
 
-    // fan.position(104, 254);
-    // DRAW ANIMATION THROUGH P5!!!
+    image(fan[0], 124, 294, 380.1, 242.9);
+    
+    // while(fan){
+    //   if(fani < 11){
+    //     fani ++;
+    //   }
+    //   else if(fani > 12 && fani >= 0){
+    //     fani --;
+    //   }
+    // }
   }
 }
 
@@ -706,20 +705,25 @@ class InHomeRoom extends PNGRoom {
     this.npc1.addSingleInteraction("Why do they need to do that?");
     this.npc1.addSingleInteraction("Why can\'t they just behave.");
 
-    this.npc2 = new NPC("Dad", width/2, height/3, 'assets/npc-dad.png');
+    this.npc2 = new NPC("Dad", width/2 - 50, height/3, 'assets/npc-dad.png');
     this.npc2.addSingleInteraction("What\'s this on the TV?");
     this.npc2.addSingleInteraction("When we first moved here,");
     this.npc2.addSingleInteraction("we didn\'t have to do all this.");
     this.npc2.addSingleInteraction("What do you mean that\'s not right?");
     
-    // setup flag, seto false
     this.hasSetup = false;
-  }
+    
+    this.screens = [];
+    this.screens[0] = loadImage('assets/tvscreen-1.png');
+    this.screens[1] = loadImage('assets/tvscreen-2.png');
+    this.screens[2] = loadImage('assets/tvscreen-3.png');
+    this.screens[3] = loadImage('assets/tvscreen-4.png');
+    this.screens[4] = loadImage('assets/tvscreen-5.png');
 
-  // call the PNGRoom superclass's draw function to draw the background image
-  // and draw our code adter this
+    screeni = 0;
+  }
+ 
   draw() {
-    // Idea is to call the npc1.setup() function ONE time, so we use this kind of flag
     if( this.hasSetup === false ) {
       // setup NPC 1
       this.npc1.setup();
@@ -744,14 +748,20 @@ class InHomeRoom extends PNGRoom {
     this.npc1.displayInteractPrompt(playerAvatar);
     this.npc2.displayInteractPrompt(playerAvatar);
 
+    this.npc2.interactionIndex === 3
     // start game
-    if(this.npc2.interactionIndex === 4){
-        drawHomeGrabbables();
+    if(this.npc2.interactionIndex === 3){
+      push();
+      rectMode(CORNER);
+      fill('#E2A453');
+      noStroke();
+      rect(750, 400, 385, 90);
+      fill('black'); 
+      textSize(20);
+      text('Explain to your dad how he\'s wrong by changing the TV channel to show different historical moments.', 760, 410, 375);
+      image(this.screens[screeni], 737, 46);
+      pop();
     }
-  }
-
-  drawHomeGrabbables(){
-
   }
 
   // custom code here to do stuff upon exiting room
@@ -798,7 +808,7 @@ class ProtestRoom extends PNGRoom {
     this.npc1.addSingleInteraction("see other signs here.");
     this.npc1.addSingleInteraction("Hope to see you around!");
 
-    this.npc2 = new NPC("Protest", width/3, height-250, 'assets/npc-protest.png');
+    this.npc2 = new NPC("Protest", width/3, height-230, 'assets/npc-protest.png');
     this.npc2.addSingleInteraction("STOP ASIAN HATE");
     this.npc2.addSingleInteraction("WE WANT A MORE DETAILED CENSUS");
     this.npc2.addSingleInteraction("NOT YOUR MODEL MINORITY");
@@ -868,20 +878,20 @@ class ProtestRoom extends PNGRoom {
   // }
 }
 
-var sign1;
-var sign2;
-var sign3;
-var sign4;
-var sign5;
-var sign6;
-var sign7;
-
 class Street1Room extends PNGRoom {
   preload() {
-    this.sign = new StaticSprite("Sign1", 500, 500, 'assets/streetgrab1.png');
-    this.sign = new StaticSprite("Sign2", 600, 300, 'assets/streetgrab2.png');
-    this.sign = new StaticSprite("Sign3", 550, 600, 'assets/streetgrab3.png');
-    // this.signLoaded = false;
+    this.signs = [];
+    this.signs.push(new StaticSprite("Sign1", 500, 450, 'assets/streetgrab1.png'));
+    this.signs.push(new StaticSprite("Sign2", 800, 700, 'assets/streetgrab2.png'))
+    this.signs.push(new StaticSprite("Sign3", 550, 600, 'assets/streetgrab3.png'))
+
+    this.signsCollected = [];
+    this.signsCollected.push(false);
+    this.signsCollected.push(false);
+    this.signsCollected.push(false);
+
+    
+    this.signsLoaded = false;
 
     // signUsed = false;
   }
@@ -893,24 +903,46 @@ class Street1Room extends PNGRoom {
     super.draw();
 
     // Add your code here
-    if(this.signLoaded === false) {
-      this.sign.setup();
-      // this.signLoaded = true;
+    if(this.signsLoaded === false) {
+      for( let i = 0; i < this.signs.length; i++ ) {
+        this.signs[i].setup();
+        // this.singsCollected[i] = false;
+      }
+      this.signLoaded = true;
     }
 
-    drawSprites();
+    for(let i = 0; i < this.signs.length; i++ ) {
+      if(this.signsCollected[i] === false){
+        drawSprite(this.signs[i].sprite);
+      }
+    }
+    this.signLoaded = true;
 
-    // playerAvatar.sprite.overlap(this.sign.sprite, this.)
+    for( let i = 0; i < this.signs.length; i++ ) {
+      if( playerAvatar.sprite.overlap(this.signs[i].sprite) ) {
+        // console.log("collision: " + i);
+        this.signsCollected[i] = true;;
+      }
+    }
   }
 }
 
 class Street2Room extends PNGRoom {
   preload() {
-    this.sign = new StaticSprite("Sign4", 500, 500, 'assets/streetgrab4.png');
-    this.sign = new StaticSprite("Sign5", 600, 300, 'assets/streetgrab5.png');
-    this.sign = new StaticSprite("Sign6", 300, 600, 'assets/streetgrab6.png');
-    this.sign = new StaticSprite("Sign7", 400, 100, 'assets/streetgrab7.png');
-    // this.signLoaded = false;
+    this.signs = [];
+    this.signs.push(new StaticSprite("Sign4", 900, 250, 'assets/streetgrab4.png'));
+    this.signs.push(new StaticSprite("Sign5", 800, 700, 'assets/streetgrab5.png'))
+    this.signs.push(new StaticSprite("Sign6", 300, 400, 'assets/streetgrab6.png'))
+    this.signs.push(new StaticSprite("Sign7", 750, 500, 'assets/streetgrab7.png'))
+
+    this.signsCollected = [];
+    this.signsCollected.push(false);
+    this.signsCollected.push(false);
+    this.signsCollected.push(false);
+    this.signsCollected.push(false);
+
+    
+    this.signsLoaded = false;
 
     // signUsed = false;
   }
@@ -922,14 +954,26 @@ class Street2Room extends PNGRoom {
     super.draw();
 
     // Add your code here
-    if(this.signLoaded === false) {
-      this.sign.setup();
-      // this.signLoaded = true;
+    if(this.signsLoaded === false) {
+      for( let i = 0; i < this.signs.length; i++ ) {
+        this.signs[i].setup();
+      }
+      this.signLoaded = true;
     }
 
-    // drawSprites();
+    for(let i = 0; i < this.signs.length; i++ ) {
+      if(this.signsCollected[i] === false){
+        drawSprite(this.signs[i].sprite);
+      }
+    }
+    this.signLoaded = true;
 
-    // playerAvatar.sprite.overlap(this.sign.sprite, this.)
+    for( let i = 0; i < this.signs.length; i++ ) {
+      if( playerAvatar.sprite.overlap(this.signs[i].sprite) ) {
+        // console.log("collision: " + i);
+        this.signsCollected[i] = true;;
+      }
+    }
   }
 }
 
