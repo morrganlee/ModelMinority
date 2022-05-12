@@ -63,7 +63,7 @@ function Clickable() {
 	this.y = 0;			//Y position of the clickable
 	this.width = 100;		//Width of the clickable
 	this.height = 50;		//Height of the clickable
-	this.color = "#FFFFFF";		//Background color of the clickable
+	this.color = "#CA2B30";		//Background color of the clickable
 	this.cornerRadius = 10;		//Corner radius of the clickable
 	this.strokeWeight = 10;		//Stroke width of the clickable
 	this.stroke = "#000000";	//Border color of the clickable
@@ -243,10 +243,14 @@ class ClickableManager {
 
 	// draw all clickables (visible now in the draw function)
 	draw() {
-		for( let i = 0; i < this.clickableArray.length; i++ ) {
+		for( let i = 0; i < this.clickableArray.length; i++) {
 			this.clickableArray[i].draw();
 		}
 	}
+
+	// drawDone() {
+	// 	this.clickableArray[14].draw();
+	// }
 
 	// given a column name and cell, will get the String value associated with it
 	getAttribute(rowNum,attStr) {

@@ -4,10 +4,11 @@ ID,Name,State,PNGFilename,Text,x,y,visible
 3,Cinema2,CinemaLobby,,2,585,600,yes
 4,Cinema3,CinemaLobby,,3,1005,600,yes
 5,TechEnter,Tech,,ENTER,1040,520,yes
-6,HomeEnter,Home,,ENTER,160,365,yes
+6,HomeEnter,Home,,ENTER,160,490,yes
 7,Exit,Tech3,,EXIT,1100,700,yes
 8,Exit,InHome,,EXIT,1100,700,yes
 9,Exit,Cinema1,,EXIT,1100,700,yes
 10,Exit,Cinema2,,EXIT,1100,700,yes
 12,Exit,Cinema3,,EXIT,1100,700,yes
 13,Exit,CinemaLobby,,EXIT,1100,700,yes
+14,Done,Center,,DONE?,585,500,no

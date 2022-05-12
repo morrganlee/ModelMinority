@@ -39,6 +39,7 @@ var front;
 var back;
 var side;
 
+// game variables
 var screeni;
 var numSignsCollected;
 
@@ -53,6 +54,10 @@ var downarrow;
 var rightarrow;
 var leftarrow;
 
+// setting next room for arrow direction
+var nextroom;
+
+
 // Allocate Adventure Manager with states table and interaction tables
 function preload() {
   //--- TEMPLATE STUFF: Don't change
@@ -64,6 +69,7 @@ function preload() {
   downarrow = loadImage('assets/arrows/down.png');
   rightarrow = loadImage('assets/arrows/right.png');
   leftarrow = loadImage('assets/arrows/left.png');
+
 }
 
 // Setup the adventure manager
@@ -78,6 +84,7 @@ function setup() {
 
   // MODIFY THIS: change to initial position
   playerAvatar = new Avatar("Player", 200, 500); // 200, 500
+
    
   // MODIFY THIS: to make your avatar go faster or slower
   playerAvatar.setMaxSpeed(20);
@@ -108,13 +115,10 @@ function setup() {
   //--
 
   // load adobe font
-  textFont('roc-grotesk-bold');
   textFont('roc-grotesk');
 
-  // frameRate(20);
-
   // NEW: LINE FOR DEBUGGING
-  // adventureManager.changeState("Tech");
+  adventureManager.changeState("CinemaLobby");
 }
 
 // Adventure manager handles it all!
@@ -128,9 +132,20 @@ function draw() {
   clickablesManager.draw();
   //---
 
+  // make DONE clickable button not visible until needed
+  if( adventureManager.getStateName() === "Center"){
+    if(nextroom !== 5){
+      push();
+      noStroke();
+      fill("#F8F5F2");
+      rect(570, 490, 160, 65);
+      pop();
+    }
+  }
+
   //--- MODIFY THESE CONDITONALS
-  // No avatar for Splash screen or Instructions screen
-  if( adventureManager.getStateName() !== "Splash") {
+  // No avatar for Splash screen or End screen
+  if( adventureManager.getStateName() !== "Splash" && adventureManager.getStateName() !== "End") {
       
     //--- TEMPLATE STUFF: Don't change    
     // responds to keydowns
@@ -145,11 +160,26 @@ function draw() {
 
   avatarReset()
 
-  // keyPressed() {
-  //   if(key === "x"){
+  setnextroom();
+  
+}
 
-  //   }
-  // }
+function setnextroom() {
+  if(adventureManager.getStateName() === "Instructions"){
+    nextroom = 1;
+  }
+  else if(adventureManager.getStateName() === "Tech3"){
+    nextroom = 2;
+  }
+  else if(adventureManager.getStateName() === "Street3"){
+    nextroom = 3;
+  }
+  else if(adventureManager.getStateName() === "Cinema3"){
+    nextroom = 4;
+  }
+  else if(adventureManager.getStateName() === "InHome"){
+    nextroom = 5;
+  }
 }
 
 function keyPressed() {
@@ -267,9 +297,10 @@ function setupClickables() {
     clickables[i].onOutside = clickableButtonOnOutside;
     clickables[i].onPress = clickableButtonPressed;
     clickables[i].textFont = "roc-grotesk";
-    clickables[i].textColor = "#CA2B30"; // red
+    clickables[i].textColor = "#F8F5F2";
+    clickables[i].color = "#CA2B30"; // red
     clickables[i].textSize = 30;
-    clickables[i].width = 110;
+    clickables[i].width = 130;
     // clickables[i].stroke = 100;
   }
 }
@@ -334,7 +365,8 @@ class SplashScreen extends PNGRoom {
   draw() {
     super.draw();
 
-    image(fan[0], 124, 294, 380.1, 242.9);
+    imageMode(CENTER);
+    image(fan[0], width/2, 280, 380.1, 242.9);
     
     // while(fani > 13 || fani >= 0){
     //   if(fani < 11){
@@ -364,10 +396,6 @@ class InstructionsScreen extends PNGRoom {
       this.npc1.setPromptLocation(0,-175);
 
       this.hasSetup = true; 
-
-      if(this.npc1.interactionIndex === 1){
-        image(rightarrow, width/2, height/2);
-      }
     }
 
     super.draw();
@@ -375,6 +403,10 @@ class InstructionsScreen extends PNGRoom {
     drawSprite(this.npc1.sprite);
 
     this.npc1.displayInteractPrompt(playerAvatar);
+
+    if(this.npc1.interactionIndex === 1){
+      image(rightarrow, width - 110, height/2);
+    }
     }
 
     // custom code here to do stuff upon exiting room
@@ -394,6 +426,31 @@ class InstructionsScreen extends PNGRoom {
       }
     }
     }
+}
+
+class CenterRoom extends PNGRoom {
+  preload() {
+  }
+
+  draw() {
+    super.draw();
+
+    if(nextroom === 1){
+      image(downarrow, width/2 - 100, height - 110);
+    }
+    else if(nextroom === 3){
+      image(rightarrow, width - 110, height/2);
+    }
+    }
+
+    unload() {
+    // if(){}
+    }
+
+    load() {
+    super.load();
+    }
+
 }
 
 class ChinaRoom extends PNGRoom {
@@ -435,6 +492,10 @@ class ChinaRoom extends PNGRoom {
     // When you have multiple NPCs, you can add them to an array and have a function 
     // iterate through it to call this function for each more concisely.
     this.npc1.displayInteractPrompt(playerAvatar);
+
+    if(this.npc1.interactionIndex === 8){
+      image(leftarrow, 20, height - 220);
+    }
   }
 
   // custom code here to do stuff upon exiting room
@@ -458,6 +519,27 @@ class ChinaRoom extends PNGRoom {
       }
     }
   }
+}
+
+class TechRoom extends PNGRoom {
+  preload() {
+  }
+
+  draw() {
+    super.draw();
+
+    if(nextroom === 2){
+      image(uparrow, 200, 50);
+    }
+    }
+
+    unload() {
+    }
+
+    load() {
+    super.load();
+    }
+
 }
 
 class Tech1Room extends PNGRoom {
@@ -676,6 +758,73 @@ class Tech3Room extends PNGRoom {
   }
 }
 
+class CinemaRoom extends PNGRoom {
+  preload() {
+  }
+
+  draw() {
+    super.draw();
+
+    if(nextroom === 4){
+      image(leftarrow, 20, height - 220); 
+    }
+    else if(nextroom === 5){
+      image(downarrow, 100, height - 150);
+    }
+  }
+
+    unload() {
+    }
+
+    load() {
+    super.load();
+    }
+}
+
+class LobbyRoom extends PNGRoom {
+  preload() {
+
+  }
+
+  // call the PNGRoom superclass's draw function to draw the background image
+  draw() {
+    super.draw();
+
+    push();
+    rectMode(CENTER);
+    fill('#E2A453');
+    noStroke();
+    rect(215, 720, 355, 90);
+    fill('black'); 
+    textSize(20);
+    rectMode(CORNER);
+    text('You got your tickets! \nFeel free to go into all of the \ntheaters and enjoy the shows!', 50, 685, 375);
+    pop();
+    
+  }
+}
+
+class HomeRoom extends PNGRoom {
+  preload() {
+  }
+
+  draw() {
+    super.draw();
+
+    if(nextroom === 5){
+      image(rightarrow, width - 150, height - 250);
+    }
+  }
+
+    unload() {
+    }
+
+    load() {
+    super.load();
+    }
+
+}
+
 class InHomeRoom extends PNGRoom {
   preload() {
     this.npc1 = new NPC("Mom", 200, 500, 'assets/npc-mom.png');
@@ -683,13 +832,16 @@ class InHomeRoom extends PNGRoom {
     this.npc1.addSingleInteraction("It was scary, with so many people.  \n They were yelling so loud...");
     this.npc1.addSingleInteraction("Them making my life harder \n makes me want to disagree.");
     this.npc1.addSingleInteraction("Why do they need to do that? \n Why can\'t they just behave.");
+    this.npc1.addSingleInteraction("Promise me you won't go to \n any of those gatherings.");
+    this.npc1.addSingleInteraction("In China, protesters will \n often disappear.");
+    this.npc1.addSingleInteraction("We can\'t have that \n happening to you.");
+
 
     this.npc2 = new NPC("Dad", width/2 - 50, height/3, 'assets/npc-dad.png');
     this.npc2.addSingleInteraction("Hey Alice, \n what\'s this on the TV?");
     this.npc2.addSingleInteraction("When we first moved here, \n we didn\'t have to do all this.");
     this.npc2.addSingleInteraction("... \n What do you mean that\'s not right?");
-    this.npc2.addSingleInteraction("... \n What do you mean that\'s not right?");
-    
+    this.npc2.addSingleInteraction("... \n What do you mean that\'s not right?");    
     this.hasSetup = false;
     
     this.screens = [];
@@ -734,6 +886,16 @@ class InHomeRoom extends PNGRoom {
       image(this.screens[screeni], 737, 46);
       pop();
     }
+
+    // add to dad npc after game is finished
+    if(screeni === 3){
+      this.npc2.addSingleInteraction("... \n Wow, I forgot about most of these things.");
+      this.npc2.addSingleInteraction("We overcame these things \n so that means they will too.");
+      this.npc2.addSingleInteraction("Right? \n ... Oh.");
+
+    }
+    // this.npc2.addSingleInteraction("... \n Wow, I forgot about most of these things.");
+    // this.npc2.addSingleInteraction("We overcame these things \n so that means they will too.");
   }
 
   unload() {
@@ -806,6 +968,10 @@ class ProtestRoom extends PNGRoom {
     // iterate through it to call this function for each more concisely.
     this.npc1.displayInteractPrompt(playerAvatar);
     // this.npc2.displayInteractPrompt(playerAvatar);
+
+    if(this.npc1.interactionIndex === 6){
+      image(uparrow, width/2 - 110, 50);
+    }
   }
 
   // custom code here to do stuff upon exiting room
@@ -852,23 +1018,9 @@ class Street1Room extends PNGRoom {
 
     
     this.signsLoaded = false;
-
-    // signUsed = false;
-
-    // for(let i = 0; i< this.signs.length; i++) {
-    //   if(this.signsCollected[i] = true){
-    //     numSignsCollected ++;
-    //   }
-    //   else if(numSignsCollected = NaN){
-    //     numSignsCollected = 0;
-    //   }
-    // }
   }
 
-  // call the PNGRoom superclass's draw function to draw the background image
-  // and draw our code adter this
   draw() {
-    // this calls PNGRoom.draw()
     super.draw();
 
     push();
@@ -879,10 +1031,9 @@ class Street1Room extends PNGRoom {
     fill('black'); 
     textSize(20);
     rectMode(CORNER);
-    text('Ready to join the protest? \nCollect all the signs on the \nstreet to bring to the crowd.', 805, 75, 375);
+    text('Ready to join the protest? \nCollect all seven signs on the \nstreet to bring to the crowd.', 805, 75, 375);
     pop();
 
-    // Add your code here
     if(this.signsLoaded === false) {
       for(let i = 0; i < this.signs.length; i++ ) {
         this.signs[i].setup();
@@ -900,20 +1051,29 @@ class Street1Room extends PNGRoom {
 
     for( let i = 0; i < this.signs.length; i++ ) {
       if( playerAvatar.sprite.overlap(this.signs[i].sprite) ) {
-        this.signsCollected[i] = true;;
+        this.signsCollected[i] = true;
       }
     }
 
-    numSignsCollected = 0;
-    push();
-    fill('#E2A453');
-    noStroke();
-    rect(100, height - 200, 200, 90);
-    fill('black');
-    textSize(20);
-    text('Signs collected:', 120, height - 180, 250);
-    text(numSignsCollected + ' / 7', 120, height - 130);
-    pop();
+    if(nextroom === 1){
+      // for( let i = 0; i < this.signs.length; i++ ) {
+      //   if( this.signsCollected[i] = true ) {
+          image(downarrow, width/2 - 100, height - 110);
+        // }
+      // }
+    }
+
+    // sign counter
+    // numSignsCollected = 0;
+    // push();
+    // fill('#E2A453');
+    // noStroke();
+    // rect(100, height - 200, 200, 90);
+    // fill('black');
+    // textSize(20);
+    // text('Signs collected:', 120, height - 180, 250);
+    // text(numSignsCollected + ' / 7', 120, height - 130);
+    // pop();
   }
 }
 
@@ -964,78 +1124,44 @@ class Street2Room extends PNGRoom {
         this.signsCollected[i] = true;;
       }
     }
+
+    if(nextroom === 1){
+      image(downarrow, width/2 - 100, height - 110);
+    }
   }
 }
 
-// not sure if i want to include
-// class ParkRoom extends PNGRoom {
-//   preload() {
-//     // define class varibles here, load images or anything else
-//     this.npc1 = new NPC("Catcall", 700, 500, 'assets/npc-catcall.png');
-//     this.npc1.addSingleInteraction("NI HAO \n LING LING");
-//     this.npc1.addSingleInteraction("HEY \n ME SO HORNY");
-//     this.npc1.addSingleInteraction("YOU LOOK LIKE MULAN \n YOU'RE SO HOT FOR AN ASIAN");
-//     this.npc1.addSingleInteraction("COME CLOSER, \n I WONT HURT YOU");
-    
-//     this.hasSetup = false;
-//   }
- 
-//   draw() {
-//     if( this.hasSetup === false ) {
-//       // setup NPC 1
-//       this.npc1.setup();
+class EndScreen extends PNGRoom{
+  preload() {
+    fan[0] = loadImage('assets/fan/fan-01.png');
+    fan[1] = loadImage('assets/fan/fan-02.png');
+    fan[2] = loadImage('assets/fan/fan-03.png');
+    fan[3] = loadImage('assets/fan/fan-04.png');
+    fan[4] = loadImage('assets/fan/fan-05.png');
+    fan[5] = loadImage('assets/fan/fan-06.png');
+    fan[6] = loadImage('assets/fan/fan-07.png');
+    fan[7] = loadImage('assets/fan/fan-08.png');
+    fan[8] = loadImage('assets/fan/fan-09.png');
+    fan[9] = loadImage('assets/fan/fan-10.png');
+    fan[10] = loadImage('assets/fan/fan-11.png');
+    fan[11] = loadImage('assets/fan/fan-12.png');
+  }
 
-//       this.hasSetup = true; 
-//     }
+  draw() {
+    super.draw();
 
-//     // set to already interacting
-//     this.npc1.isInteracting(playerAvatar) = true;
+    imageMode(CENTER);
+    image(fan[0], 284, 424, 380.1, 242.9);
+    }
 
-//     // this calls PNGRoom.draw()
-//     super.draw();
+    // custom code here to do stuff upon exiting room
+    unload() {
+    }
 
-//     // draw our NPCs
-//     drawSprite(this.npc1.sprite);
+    // custom code here to do stuff upon entering room
+    load() {
+    // pass to PNGRoom to load image
+    super.load();
+    }
 
-//     // When you have multiple NPCs, you can add them to an array and have a function 
-//     // iterate through it to call this function for each more concisely.
-//     this.npc1.displayInteractPrompt(playerAvatar);
-
-//     // this.npc2.interactionIndex === 3
-//     // start game
-//     if(this.npc2.interactionIndex === 3){
-//       this.npc1.resetInteraction();
-//     }
-//   }
-
-//   // custom code here to do stuff upon exiting room
-//   unload() {
-//     // reset NPC interaction to beginning when entering room
-//     this.npc1.resetInteraction();
-//   }
-
-//   // custom code here to do stuff upon entering room
-//   load() {
-//     // pass to PNGRoom to load image
-//     super.load();
-    
-//     // Add custom code here for unloading
-//   }
-
-//   keyPressed() {
-//     if(key === ' ') {
-//       if(this.npc1.isInteracting(playerAvatar)) {
-//         this.npc1.continueInteraction();
-//       }
-//     }
-//   }
-// }
-
-// class TemplateScreen extends PNGRoom {
-//   preload() {
-//   }
-
-//   draw() {
-//     super.draw();
-//   }
-// }
+}

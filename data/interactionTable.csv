@@ -4,6 +4,7 @@ Instructions,,E,Center
 Center,,N,Cinema
 Center,,S,Street1
 Center,,E,Tech
+Center,Done,,End
 Cinema,,S,Center
 Cinema,,W,Home
 Cinema,,E,Chinatown

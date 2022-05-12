@@ -1,16 +1,16 @@
 ID,StateName,ClassName,PNGFilename,CollisionFilename
 0,Splash,SplashScreen,assets/Splash.png,
 1,Instructions,InstructionsScreen,assets/Instructions.png,data/Instructions_cl.csv
-2,Center,PNGRoom,assets/Center.png,data/Center_cl.csv
-3,Tech,PNGRoom,assets/Tech.png,data/Tech_cl.csv
+2,Center,CenterRoom,assets/Center.png,data/Center_cl.csv
+3,Tech,TechRoom,assets/Tech.png,data/Tech_cl.csv
 4,Neighborhood,PNGRoom,assets/Neighborhood.png,
 5,Chinatown,ChinaRoom,assets/Chinatown.png,data/Chinatown_cl.csv
-6,Cinema,PNGRoom,assets/Cinema.png,data/Cinema_cl.csv
-7,Home,PNGRoom,assets/Home.png,data/Home_cl.csv
+6,Cinema,CinemaRoom,assets/Cinema.png,data/Cinema_cl.csv
+7,Home,HomeRoom,assets/Home.png,data/Home_cl.csv
 8,Street1,Street1Room,assets/Street1.png,data/Street1_cl.csv
 9,Street2,Street2Room,assets/Street2.png,data/Street2_cl.csv
 10,Street3,ProtestRoom,Assets/Street3.png,data/Street3_cl.csv
-11,CinemaLobby,PNGRoom,Assets/CinemaLobby.png,data/CinemaLobby_cl.csv
+11,CinemaLobby,LobbyRoom,Assets/CinemaLobby.png,data/CinemaLobby_cl.csv
 12,Cinema1,PNGRoom,Assets/Cinema1.png,data/CinemaLobby_cl.csv
 13,Cinema2,PNGRoom,Assets/Cinema2.png,data/CinemaLobby_cl.csv
 14,Cinema3,PNGRoom,Assets/Cinema3.png,data/CinemaLobby_cl.csv
@@ -18,3 +18,4 @@ ID,StateName,ClassName,PNGFilename,CollisionFilename
 16,Tech2,Tech2Room,Assets/Tech2.png,data/Tech2_cl.csv
 17,Tech3,Tech3Room,Assets/Tech3.png,data/Tech3_cl.csv
 18,InHome,InHomeRoom,Assets/InHome.png,data/InHome_cl.csv
+19,End,EndScreen,Assets/End.png,data/End_cl.csv
