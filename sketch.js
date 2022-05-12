@@ -118,7 +118,7 @@ function setup() {
   textFont('roc-grotesk');
 
   // NEW: LINE FOR DEBUGGING
-  adventureManager.changeState("CinemaLobby");
+  // adventureManager.changeState("CinemaLobby");
 }
 
 // Adventure manager handles it all!
