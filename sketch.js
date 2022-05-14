@@ -421,6 +421,11 @@ class Street1Room extends PNGRoom {
       pop();
     }
 
+    // if avatar has not gone to protest room yet
+    if(nextroom === 1){
+      image(downarrow, width/2 - 100, height - 110);
+    }
+
     // setup signs if signs not loaded in preload()
     if(this.signsLoaded === false) {
       for(let i = 0; i < this.signs.length; i++ ) {
@@ -442,11 +447,6 @@ class Street1Room extends PNGRoom {
       if( playerAvatar.sprite.overlap(this.signs[i].sprite) ) {
         this.signsCollected[i] = true;
       }
-    }
-
-    // if avatar has not gone to protest room yet
-    if(nextroom === 1){
-      image(downarrow, width/2 - 100, height - 110);
     }
   }
 }
@@ -481,6 +481,11 @@ class Street2Room extends PNGRoom {
       this.signLoaded = true;
     }
 
+    // if avatar has not gone to protest room yet
+    if(nextroom === 1){
+      image(downarrow, width/2 - 100, height - 110);
+    }
+
     // draws sprites that have not been collided yet
     for(let i = 0; i < this.signs.length; i++ ) {
       if(this.signsCollected[i] === false){
@@ -494,11 +499,6 @@ class Street2Room extends PNGRoom {
       if( playerAvatar.sprite.overlap(this.signs[i].sprite) ) {
         this.signsCollected[i] = true;;
       }
-    }
-
-    // if avatar has not gone to protest room yet
-    if(nextroom === 1){
-      image(downarrow, width/2 - 100, height - 110);
     }
   }
 }
